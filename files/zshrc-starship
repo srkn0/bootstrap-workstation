@@ -98,6 +98,7 @@ alias lt='eza -aT --color=always --icons --group-directories-first' # tree listi
 alias fzp="fzf --preview 'bat --style=numbers --color=always --line-range :500 {}'"
 
 # User configuration
+alias k='kubectl'
 
 # Make sure $HOME/.local/bin is in the PATH
 export PATH=$HOME/.local/bin:$PATH
