@@ -102,8 +102,6 @@ alias fzp="fzf --preview 'bat --style=numbers --color=always --line-range :500 {
 # Make sure $HOME/.local/bin is in the PATH
 export PATH=$HOME/.local/bin:$PATH
 
-export _JAVA_OPTIONS=-Djava.net.preferIPv4Stack=true
-
 # For Homebrew, if installed
 export HOMEBREW_PREFIX="/home/linuxbrew/.linuxbrew";
 export HOMEBREW_CELLAR="/home/linuxbrew/.linuxbrew/Cellar";

@@ -3,10 +3,6 @@ Role Name
 
 My Ansible role for installing "Oh My Zsh", some of its plug-ins, and other command line tools. It can also install and configure the "starship" prompt or the "p10k" theme.
 
-DISCLAIMER: this role is built to fit my needs and configurations, and it is not meant to be reusable.
-
-This role is described in this blog post: https://www.lorenzobettini.it/2023/07/my-ansible-role-for-oh-my-zsh-and-other-cli-programs/
-
 Role Variables
 --------------
 
@@ -24,7 +20,7 @@ For `starship` (default):
 ```yaml
     - name: Install Oh My Zsh
       ansible.builtin.include_role:
-        name: lorenzobettini.oh_my_zsh
+        name: srkn0.oh_my_zsh
 ```
 
 For `p10k`:
@@ -32,7 +28,7 @@ For `p10k`:
 ```yaml
     - name: Install Oh My Zsh
       ansible.builtin.include_role:
-        name: lorenzobettini.oh_my_zsh
+        name: srkn0.oh_my_zsh
       vars:
         with_starship: false
         copy_dot_files: false

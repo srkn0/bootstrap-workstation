@@ -1,9 +1,9 @@
 galaxy_info:
   role_name: oh_my_zsh
-  author: Lorenzo Bettini
-  namespace: lorenzobettini
+  author: Serkan Köse
+  namespace: srkn0
   description: An Ansible/Molecule example for installing Oh My Zsh
-  company: Lorenzo Bettini
+  company: Serkan Köse
   license: "license MIT"
 
   min_ansible_version: '2.1'

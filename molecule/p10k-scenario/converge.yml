@@ -2,8 +2,8 @@
 - name: Converge
   hosts: all
   tasks:
-    - name: "Include lorenzobettini.oh_my_zsh"
+    - name: "Include srkn0.oh_my_zsh"
       ansible.builtin.include_role:
-        name: "lorenzobettini.oh_my_zsh"
+        name: "srkn0.oh_my_zsh"
       vars:
         with_starship: false
