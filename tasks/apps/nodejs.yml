@@ -7,15 +7,15 @@
   vars:
     ansible_become: true
 
-- name: Check if pnpm is installed
-  command: pnpm --version
-  register: pnpm_check
-  failed_when: false
-  changed_when: false
+- name: Setup pnpm global environment
+  command: pnpm setup
+  become: false
 
-- name: Install pnpm globally via npm
-  npm:
-    name: pnpm@latest-10
-    global: yes
-  when: pnpm_check.rc != 0
-  become: true
+- name: Install global pnpm packages
+  shell: |
+    source ~/.zshrc
+    pnpm add -g {{ item }}
+  args:
+    executable: /bin/zsh
+  loop: "{{ nodejs_pnpm_global_packages }}"
+  become: false
