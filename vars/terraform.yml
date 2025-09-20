@@ -1,0 +1,4 @@
+terraform_version: latest
+__terraform_default_path: /usr/local/bin/
+terraform_pkg_url: "https://releases.hashicorp.com/terraform/{{ __terraform_version }}/terraform_{{ __terraform_version }}_linux_{{ base_arch[ansible_architecture] | default('amd64') }}.zip"
+terraform_path: "{{ __terraform_default_path }}"

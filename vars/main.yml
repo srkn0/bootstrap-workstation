@@ -11,3 +11,4 @@ copy_dot_files: true
 with_k8s_tools: true
 with_docker: true
 with_nodejs: true
+with_terraform: true
