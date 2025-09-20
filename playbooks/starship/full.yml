@@ -1,0 +1,12 @@
+---
+- name: Bootstrap workstation
+  hosts: all
+  become: true
+  vars:
+    with_starship: true
+    copy_dot_files: true
+    with_k8s_tools: true
+    with_docker: true
+    with_nodejs: true
+  roles:
+    - ../../../

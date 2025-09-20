@@ -12,27 +12,6 @@ To install, instead, the "p10k" theme, pass the variable `with_starship: false`.
 By default, it also copies the dot files (i.e., `.zshrc` and `.p10k` for "p10k").
 To disable that, pass the variable `copy_dot_files: false`.
 
-Example Playbook
-----------------
-
-For `starship` (default):
-
-```yaml
-    - name: Install Oh My Zsh
-      ansible.builtin.include_role:
-        name: srkn0.oh_my_zsh
-```
-
-For `p10k`:
-
-```yaml
-    - name: Install Oh My Zsh
-      ansible.builtin.include_role:
-        name: srkn0.oh_my_zsh
-      vars:
-        with_starship: false
-        copy_dot_files: false
-```
 
 Notes
 -------
@@ -40,14 +19,15 @@ Notes
 before running the playbook, install requirements 
 `ansible-galaxy install -r requirements.yml`
 
-To run the playbook on this system for `starship` (default):
+To run the playbook on this system first, choose which playbook you want to run:
+
+Options available:
+- starship/p10k
+  - playbooks/(starship/p10k)/full.yml - Installs environment with (starship/p10k), ohmyzsh, plugins, kubectl, helm, kustomize and nodejs with pnpm
+  - playbooks/(starship/p10k)/k8s-docker.yml - Installs environment with (starship/p10k), ohmyzsh, plugins, kubectl, helm, kustomize and without nodejs/pnpm
+
+Simply run: 
 
 ```
-ansible-playbook playbooks/bootstrap.yml -i playbooks/inventory -K
-```
-
-To run the playbook on this system for `p10k`:
-
-```
-ansible-playbook playbooks/bootstrap.yml -i playbooks/inventory -K --extra-vars '{"with_starship":false}'
+ansible-playbook playbooks/(starship/p10k)/(full/k8s-docker).yml -i playbooks/inventory -K
 ```

@@ -257,12 +257,20 @@
 
 - name: Tasks for kubectl
   ansible.builtin.include_tasks: apps/kubectl.yml
+  when: with_k8s_tools
 
 - name: Tasks for helm
   ansible.builtin.include_tasks: apps/helm.yml
+  when: with_k8s_tools
 
 - name: Tasks for kustomize
   ansible.builtin.include_tasks: apps/kustomize.yml
+  when: with_k8s_tools
+
+- name: Tasks for docker
+  ansible.builtin.include_tasks: apps/docker.yml
+  when: with_docker
 
 - name: Tasks for nodejs
   ansible.builtin.include_tasks: apps/nodejs.yml
+  when: with_nodejs

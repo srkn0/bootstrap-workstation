@@ -8,3 +8,6 @@ zoxideversion: 0.9.1
 procsversion: v0.13.3
 with_starship: true
 copy_dot_files: true
+with_k8s_tools: true
+with_docker: true
+with_nodejs: true
