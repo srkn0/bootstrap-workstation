@@ -248,24 +248,21 @@
     shell: /bin/zsh
 
 - name: Tasks for starship
-  ansible.builtin.include_tasks: starship.yml
+  ansible.builtin.include_tasks: shell/starship.yml
   when: with_starship
 
 - name: Tasks for p10k
-  ansible.builtin.include_tasks: p10k.yml
+  ansible.builtin.include_tasks: shell/p10k.yml
   when: not with_starship
 
 - name: Tasks for kubectl
-  ansible.builtin.include_tasks: kubectl.yml
+  ansible.builtin.include_tasks: apps/kubectl.yml
 
 - name: Tasks for helm
-  ansible.builtin.include_tasks: helm.yml
-
-- name: Tasks for docker
-  ansible.builtin.include_role:
-    name: geerlingguy.docker
-  vars:
-    ansible_become: true
+  ansible.builtin.include_tasks: apps/helm.yml
 
 - name: Tasks for kustomize
-  ansible.builtin.include_tasks: kustomize.yml
+  ansible.builtin.include_tasks: apps/kustomize.yml
+
+- name: Tasks for nodejs
+  ansible.builtin.include_tasks: apps/nodejs.yml

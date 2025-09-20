@@ -37,26 +37,17 @@ For `p10k`:
 Notes
 -------
 
-To quickly check `converge` passing a variable:
-
-```
-molecule converge -- --extra-vars='with_starship=false'
-```
-
-To run a different scenario:
-
-```
-molecule converge --scenario-name='p10k-scenario'
-```
+before running the playbook, install requirements 
+`ansible-galaxy install -r requirements.yml`
 
 To run the playbook on this system for `starship` (default):
 
 ```
-ansible-playbook tests/test.yml -i tests/inventory -K
+ansible-playbook playbooks/bootstrap.yml -i playbooks/inventory -K
 ```
 
 To run the playbook on this system for `p10k`:
 
 ```
-ansible-playbook tests/test.yml -i tests/inventory -K --extra-vars '{"with_starship":false}'
+ansible-playbook playbooks/bootstrap.yml -i playbooks/inventory -K --extra-vars '{"with_starship":false}'
 ```

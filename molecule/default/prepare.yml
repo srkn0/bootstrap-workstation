@@ -1,9 +1,0 @@
----
-- name: Prepare
-  hosts: all
-  gather_facts: false
-  tasks:
-    - name: Install python in Arch
-      # -u is crucial to avoid partial updates and inconsistent libraries
-      ansible.builtin.raw: pacman -Syu --noconfirm --needed python sudo
-      changed_when: false

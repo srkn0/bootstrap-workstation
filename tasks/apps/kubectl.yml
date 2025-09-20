@@ -1,0 +1,66 @@
+- name: Load kubectl vars
+  ansible.builtin.include_vars: ../../vars/kubectl.yml
+
+- name: Get latest kubectl version
+  uri:
+    url: https://dl.k8s.io/release/stable.txt
+    return_content: yes
+  register: latest_kubectl_version
+
+- name: Check if kubectl is already installed
+  command: "{{ kubectl_bin_path }} version --client --short"
+  register: local_kubectl_version
+  failed_when: false
+  changed_when: false
+
+- name: Extract local kubectl version
+  set_fact:
+    local_kubectl_version_str: "{{ local_kubectl_version.stdout | regex_search('v[0-9.]+') | default('') }}"
+
+- name: Debug installed vs latest version
+  debug:
+    msg: "Installed: {{ local_kubectl_version_str }} | Latest: {{ latest_kubectl_version.content }}"
+
+- name: Skip installation if kubectl is already up-to-date
+  meta: end_play
+  when: local_kubectl_version_str == latest_kubectl_version.content
+
+# Installation beginnt hier, wenn Version unterschiedlich
+
+- name: Create kubectl versioned directory
+  file:
+    path: "{{ kubectl_install_base }}/kubectl-{{ latest_kubectl_version.content }}"
+    state: directory
+
+- name: Download kubectl binary
+  get_url:
+    url: "https://dl.k8s.io/release/{{ latest_kubectl_version.content }}/bin/linux/amd64/kubectl"
+    dest: "{{ kubectl_install_base }}/kubectl-{{ latest_kubectl_version.content }}/kubectl"
+    mode: '0755'
+
+- name: Download the kubectl checksum
+  get_url:
+    url: "https://dl.k8s.io/release/{{ latest_kubectl_version.content }}/bin/linux/amd64/kubectl.sha256"
+    dest: "{{ kubectl_install_base }}/kubectl-{{ latest_kubectl_version.content }}/kubectl.sha256"
+
+- name: Get actual sha256sum
+  shell: "sha256sum {{ kubectl_install_base }}/kubectl-{{ latest_kubectl_version.content }}/kubectl | cut -d ' ' -f1"
+  register: actual_sha
+
+- name: Read expected sha256sum
+  command: "cat {{ kubectl_install_base }}/kubectl-{{ latest_kubectl_version.content }}/kubectl.sha256"
+  register: expected_sha
+
+- name: Validate checksum
+  assert:
+    that:
+      - actual_sha.stdout == expected_sha.stdout
+    fail_msg: "SHA256 checksum does not match!"
+    success_msg: "kubectl checksum OK"
+
+- name: Create symlink to /usr/bin/kubectl
+  file:
+    src: "{{ kubectl_install_base }}/kubectl-{{ latest_kubectl_version.content }}/kubectl"
+    dest: "{{ kubectl_bin_path }}"
+    state: link
+    force: true

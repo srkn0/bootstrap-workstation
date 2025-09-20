@@ -1,7 +1,0 @@
----
-- name: Converge
-  hosts: all
-  tasks:
-    - name: "Include srkn0.oh_my_zsh"
-      ansible.builtin.include_role:
-        name: "srkn0.oh_my_zsh"

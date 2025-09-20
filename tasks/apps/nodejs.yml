@@ -1,0 +1,21 @@
+- name: Load Node.js vars
+  ansible.builtin.include_vars: ../../vars/nodejs.yml
+
+- name: Tasks for nodejs
+  ansible.builtin.include_role:
+    name: geerlingguy.nodejs
+  vars:
+    ansible_become: true
+
+- name: Check if pnpm is installed
+  command: pnpm --version
+  register: pnpm_check
+  failed_when: false
+  changed_when: false
+
+- name: Install pnpm globally via npm
+  npm:
+    name: pnpm@latest-10
+    global: yes
+  when: pnpm_check.rc != 0
+  become: true

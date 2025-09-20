@@ -1,0 +1,2 @@
+kubectl_bin_path: "/usr/bin/kubectl"
+kubectl_install_base: "/opt"

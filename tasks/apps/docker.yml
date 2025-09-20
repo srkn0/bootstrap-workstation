@@ -1,0 +1,8 @@
+- name: Load Docker vars
+  ansible.builtin.include_vars: ../../vars/docker.yml
+
+- name: Tasks for docker
+  ansible.builtin.include_role:
+    name: geerlingguy.docker
+  vars:
+    ansible_become: true
