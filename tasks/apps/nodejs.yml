@@ -4,8 +4,6 @@
 - name: Tasks for nodejs
   ansible.builtin.include_role:
     name: geerlingguy.nodejs
-  vars:
-    ansible_become: true
 
 - name: Setup pnpm global environment
   command: pnpm setup

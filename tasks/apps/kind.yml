@@ -1,0 +1,51 @@
+- name: Load kind vars
+  ansible.builtin.include_vars: ../../vars/kind.yml
+
+- name: Check if kind is already installed (AMD64)
+  stat:
+    path: /usr/local/bin/kind
+  register: kind_stat
+  failed_when: false
+
+- name: Download and install kind for AMD64 if not installed
+  shell: |
+    if [ "$(uname -m)" = "x86_64" ] && [ ! -f /usr/local/bin/kind ]; then
+      echo "Installing kind for AMD64..."
+      curl -Lo ./kind https://kind.sigs.k8s.io/dl/{{ kind_version }}/kind-linux-amd64
+    else
+      echo "Kind is already installed or architecture is not x86_64"
+    fi
+  args:
+    creates: /usr/local/bin/kind
+  when: kind_stat.stat.exists == false
+
+- name: Check if kind is already installed (ARM64)
+  stat:
+    path: /usr/local/bin/kind
+  register: kind_stat_arm
+  failed_when: false
+
+- name: Download and install kind for ARM64 if not installed
+  shell: |
+    if [ "$(uname -m)" = "aarch64" ] && [ ! -f /usr/local/bin/kind ]; then
+      echo "Installing kind for ARM64..."
+      curl -Lo ./kind https://kind.sigs.k8s.io/dl/{{ kind_version }}/kind-linux-arm64
+    else
+      echo "Kind is already installed or architecture is not aarch64"
+    fi
+  args:
+    creates: /usr/local/bin/kind
+  when: kind_stat_arm.stat.exists == false
+
+- name: Make kind binary executable
+  file:
+    path: ./kind
+    mode: '0755'
+  when: kind_stat.stat.exists == false
+
+- name: Move kind to /usr/local/bin
+  become: true
+  command: mv ./kind /usr/local/bin/kind
+  args:
+    creates: /usr/local/bin/kind
+  when: kind_stat.stat.exists == false

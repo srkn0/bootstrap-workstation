@@ -8,4 +8,4 @@
     with_docker: true
     with_nodejs: true
   roles:
-    - ../../..
+    - ../../../

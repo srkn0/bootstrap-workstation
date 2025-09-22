@@ -271,10 +271,14 @@
   ansible.builtin.include_tasks: apps/docker.yml
   when: with_docker
 
-- name: Tasks for nodejs
-  ansible.builtin.include_tasks: apps/nodejs.yml
-  when: with_nodejs
+# - name: Tasks for nodejs
+#   ansible.builtin.include_tasks: apps/nodejs.yml
+#   when: with_nodejs
 
 - name: Tasks for terraform
   ansible.builtin.include_tasks: apps/terraform.yml
   when: with_terraform
+
+- name: Tasks for kind
+  ansible.builtin.include_tasks: apps/kind.yml
+  when: with_k8s_tools
