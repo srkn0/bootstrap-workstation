@@ -1,7 +1,6 @@
 ---
 - name: Bootstrap workstation
   hosts: all
-  become: true
   vars:
     with_starship: true
     copy_dot_files: true
