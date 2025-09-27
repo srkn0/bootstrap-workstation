@@ -2,10 +2,10 @@
 - name: Bootstrap workstation
   hosts: all
   vars:
-    with_starship: true
-    copy_dot_files: true
+    with_starship: false
+    copy_dot_files: false
     with_k8s_tools: true
-    with_docker: true
+    with_docker: false
     with_nodejs: false
     with_terraform: true
   roles:

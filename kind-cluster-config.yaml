@@ -1,0 +1,14 @@
+# kind-cluster.yaml
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: sk-local
+networking:
+  # hier deine Wunsch-IP eintragen (z. B. IP deines Hosts im LAN)
+  apiServerAddress: "172.20.127.55"
+  apiServerPort: 6443   # optional: Port ändern
+nodes:
+  - role: control-plane
+  - role: worker
+
+# run this after bootstrapping cluster
+# sudo cp /root/.kube/config ~/.kube/sk-local && sudo chown $USER:$USER ~/.kube/sk-local && ln -s ~/.kube/sk-local ~/.kube/config
