@@ -46,6 +46,7 @@ docker_obsolete_packages:
 
 - [`RedHat.yaml`](./vars/RedHat.yml)
 - [`Debian.yaml`](./vars/Debian.yml)
+- [`Suse.yaml`](./vars/Suse.yml)
 
 A list of packages to be uninstalled prior to running this role. See [Docker's installation instructions](https://docs.docker.com/engine/install/debian/#uninstall-old-versions) for an up-to-date list of old packages that should be removed.
 
@@ -53,6 +54,7 @@ A list of packages to be uninstalled prior to running this role. See [Docker's i
 docker_service_manage: true
 docker_service_state: started
 docker_service_enabled: true
+docker_service_start_command: ""
 docker_restart_handler_state: restarted
 ```
 
@@ -101,12 +103,11 @@ You can change `docker_apt_gpg_key` to a different url if you are behind a firew
 
 ```yaml
 docker_yum_repo_url: "{{ docker_repo_url }}/{{ 'fedora' if ansible_facts.distribution == 'Fedora' else 'rhel' if ansible_facts.distribution == 'RedHat' else 'centos' }}/docker-{{ docker_edition }}.repo"
-docker_yum_repo_enable_nightly: '0'
 docker_yum_repo_enable_test: '0'
 docker_yum_gpg_key: "{{ docker_repo_url }}/{{ 'fedora' if ansible_facts.distribution == 'Fedora' else 'rhel' if ansible_facts.distribution == 'RedHat' else 'centos' }}/gpg"
 ```
 
-(Used only for RedHat/CentOS.) You can enable the Nightly or Test repo by setting the respective vars to `1`.
+(Used only for RedHat/CentOS.) You can enable the Test repo by setting the respective vars to `1`.
 
 You can change `docker_yum_gpg_key` to a different url if you are behind a firewall or provide a trustworthy mirror.
 Usually in combination with changing `docker_yum_repository` as well.
