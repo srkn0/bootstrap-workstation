@@ -14,15 +14,15 @@ npm_config_prefix: "/usr/local/lib/npm"
 npm_config_unsafe_perm: "false"
 
 # Define a list of global packages to be installed with NPM.
-nodejs_npm_global_packages:
-  - name: pnpm
-    version: latest-10
+nodejs_npm_global_packages: []
+  # - name: pnpm
+  #   version: latest-10
 
-nodejs_pnpm_global_packages:
-  - nx
-  - typescript
-  - eslint
-  - prettier
+# nodejs_pnpm_global_packages:
+#   - nx
+#   - typescript
+#   - eslint
+#   - prettier
   
 # The path of a package.json file used to install packages globally.
 nodejs_package_json_path: ""
