@@ -1,0 +1,48 @@
+---
+- name: Ensure apt keyrings directory exists
+  become: true
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: "0755"
+
+- name: Add mise apt signing key
+  become: true
+  ansible.builtin.get_url:
+    url: https://mise.jdx.dev/gpg-key.pub
+    dest: /etc/apt/keyrings/mise.asc
+    mode: "0644"
+
+- name: Add mise apt repository
+  become: true
+  ansible.builtin.apt_repository:
+    repo: >-
+      deb [signed-by=/etc/apt/keyrings/mise.asc
+      arch={{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}]
+      https://mise.jdx.dev/deb stable main
+    filename: mise
+    state: present
+
+- name: Install mise
+  become: true
+  ansible.builtin.apt:
+    name: mise
+    state: present
+    update_cache: true
+
+- name: Ensure mise config directory exists
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.config/mise"
+    state: directory
+    mode: "0755"
+
+- name: Deploy mise global config
+  ansible.builtin.copy:
+    src: mise/config.toml
+    dest: "{{ mise_config_target }}"
+    mode: "0644"
+
+- name: Install tools and runtimes declared in mise config
+  ansible.builtin.command: mise install --yes
+  register: mise_install
+  changed_when: "'installing' in (mise_install.stdout ~ mise_install.stderr) | lower"

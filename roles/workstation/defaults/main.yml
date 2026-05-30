@@ -1,0 +1,44 @@
+---
+# ---------------------------------------------------------------------------
+# Feature toggles - flip any of these off, or use --tags / --skip-tags.
+# ---------------------------------------------------------------------------
+with_packages: true     # base apt packages
+with_shell: true        # zsh + Oh My Zsh + plugins
+with_brew: true         # Homebrew (linuxbrew) as an ad-hoc escape hatch
+with_mise: true         # mise + all CLI tools and language runtimes
+with_fonts: true        # Nerd Font (native: ~/.local/share/fonts; WSL: Windows)
+with_neovim: true       # deploy the LazyVim config
+with_starship: true     # deploy the Starship prompt config
+with_dotfiles: true     # .zshrc, .tmux.conf, atuin config
+with_docker: true       # Docker engine via geerlingguy.docker
+
+# Run a headless LazyVim plugin sync during the play. Off by default: the first
+# interactive `nvim` launch installs plugins, and a headless sync slows CI.
+nvim_sync: false
+
+# Patch the existing Windows Terminal settings.json to use the Nerd Font (WSL only).
+wt_set_font: true
+
+# ---------------------------------------------------------------------------
+# Nerd Font (var-driven so it's trivially swappable)
+# ---------------------------------------------------------------------------
+nerd_font: "Agave"
+nerd_font_face: "Agave Nerd Font"
+nerd_font_version: "v3.4.0"
+nerd_font_url: "https://github.com/ryanoasis/nerd-fonts/releases/download/{{ nerd_font_version }}/{{ nerd_font }}.zip"
+
+# ---------------------------------------------------------------------------
+# Oh My Zsh custom plugins (cloned into ~/.oh-my-zsh/custom/plugins)
+# ---------------------------------------------------------------------------
+omz_plugins:
+  - name: zsh-autosuggestions
+    repo: https://github.com/zsh-users/zsh-autosuggestions
+  - name: zsh-completions
+    repo: https://github.com/zsh-users/zsh-completions
+  - name: zsh-syntax-highlighting
+    repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
+  - name: autoupdate
+    repo: https://github.com/TamCore/autoupdate-oh-my-zsh-plugins
+
+# mise global config destination
+mise_config_target: "{{ ansible_env.HOME }}/.config/mise/config.toml"

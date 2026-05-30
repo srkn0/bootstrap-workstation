@@ -1,0 +1,11 @@
+---
+- name: Install Docker engine (geerlingguy.docker)
+  ansible.builtin.include_role:
+    name: geerlingguy.docker
+    apply:
+      become: true
+  vars:
+    # Only manage the daemon where systemd is PID 1 (e.g. not WSL without systemd).
+    docker_service_manage: "{{ ansible_service_mgr == 'systemd' }}"
+    docker_users:
+      - "{{ ansible_user_id }}"

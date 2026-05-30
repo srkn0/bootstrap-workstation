@@ -1,0 +1,39 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: List tools installed by mise
+      ansible.builtin.command: mise ls --installed
+      register: mise_ls
+      changed_when: false
+      environment:
+        PATH: "/usr/bin:/bin"
+
+    - name: Assert key tools were installed via mise
+      ansible.builtin.assert:
+        that:
+          - "'neovim' in mise_ls.stdout"
+          - "'node' in mise_ls.stdout"
+          - "'go' in mise_ls.stdout"
+          - "'kubectl' in mise_ls.stdout"
+        fail_msg: "Expected mise-managed tools are missing:\n{{ mise_ls.stdout }}"
+
+    - name: Stat deployed config files
+      ansible.builtin.stat:
+        path: "{{ item }}"
+      register: deployed
+      loop:
+        - "{{ ansible_env.HOME }}/.zshrc"
+        - "{{ ansible_env.HOME }}/.config/nvim/init.lua"
+        - "{{ ansible_env.HOME }}/.config/starship.toml"
+        - "{{ ansible_env.HOME }}/.config/mise/config.toml"
+
+    - name: Assert deployed config files exist
+      ansible.builtin.assert:
+        that:
+          - item.stat.exists
+        fail_msg: "Missing: {{ item.item }}"
+      loop: "{{ deployed.results }}"
+      loop_control:
+        label: "{{ item.item }}"

@@ -1,0 +1,14 @@
+---
+# Sample kind cluster: 1 control-plane + 1 worker.
+# Create with:  kind create cluster --config examples/kind-cluster-config.yaml
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: local
+networking:
+  # Defaults to 127.0.0.1. Set apiServerAddress to your host's LAN IP only if
+  # you need to reach the cluster from another machine.
+  # apiServerAddress: "192.168.1.10"
+  apiServerPort: 6443
+nodes:
+  - role: control-plane
+  - role: worker

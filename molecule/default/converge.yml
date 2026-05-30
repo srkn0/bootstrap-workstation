@@ -1,0 +1,4 @@
+---
+# Reuse the real playbook so the test exercises exactly what users run.
+- name: Converge
+  ansible.builtin.import_playbook: ../../site.yml

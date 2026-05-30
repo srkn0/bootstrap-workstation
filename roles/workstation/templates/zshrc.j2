@@ -1,0 +1,62 @@
+# {{ ansible_managed }}
+# Managed by bootstrap-workstation - edits will be overwritten on next run.
+
+export ZSH="$HOME/.oh-my-zsh"
+ZSH_THEME=""          # prompt is provided by Starship (see bottom of file)
+
+# User-local binaries first on PATH
+export PATH="$HOME/.local/bin:$PATH"
+
+{% if with_mise %}
+# mise: activate so language runtimes and CLI tool shims are on PATH before
+# Oh My Zsh plugins (fzf, zoxide, ...) load below.
+if command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate zsh)"
+fi
+{% endif %}
+{% if with_brew %}
+# Homebrew (linuxbrew) - ad-hoc installs, only if present
+if [ -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+{% endif %}
+
+plugins=(
+  git
+  aliases
+  branch
+  github
+  zsh-autosuggestions
+  zsh-syntax-highlighting
+  zsh-completions
+  zsh-interactive-cd
+  zsh-navigation-tools
+  fzf
+  zoxide
+  autoupdate
+)
+
+source "$ZSH/oh-my-zsh.sh"
+
+# --- shell integrations (binaries provided by mise) ---
+command -v direnv >/dev/null 2>&1 && eval "$(direnv hook zsh)"
+command -v atuin  >/dev/null 2>&1 && eval "$(atuin init zsh)"
+
+# --- aliases ---
+alias l='eza -lah --color=always --icons --group-directories-first'
+alias la='eza -al --color=always --icons --group-directories-first'
+alias ll='eza -l --color=always --icons --group-directories-first'
+alias lt='eza -aT --color=always --icons --group-directories-first'
+alias fzp="fzf --preview 'bat --style=numbers --color=always --line-range :500 {}'"
+alias k='kubectl'
+alias kx='kubectx'
+alias kn='kubens'
+alias lg='lazygit'
+
+{% if is_wsl %}
+# --- WSL niceties ---
+command -v wslview >/dev/null 2>&1 && export BROWSER=wslview
+{% endif %}
+
+# Starship prompt (kept last)
+command -v starship >/dev/null 2>&1 && eval "$(starship init zsh)"

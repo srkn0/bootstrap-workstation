@@ -1,0 +1,14 @@
+---
+# Bootstrap a workstation: OS layer via Ansible, dev tooling via mise.
+# Usage:
+#   ./bootstrap.sh                 # one-command setup
+#   ansible-playbook site.yml -K   # equivalent, prompts for sudo password
+#
+# Select parts with tags, e.g.:
+#   ansible-playbook site.yml -K --tags mise,neovim
+#   ansible-playbook site.yml -K --skip-tags docker
+- name: Bootstrap workstation
+  hosts: all
+  gather_facts: true
+  roles:
+    - role: workstation

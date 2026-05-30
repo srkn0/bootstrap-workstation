@@ -1,0 +1,21 @@
+---
+- name: Ensure user fonts directory exists
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.local/share/fonts"
+    state: directory
+    mode: "0755"
+
+- name: Check whether the Nerd Font is already installed
+  ansible.builtin.find:
+    paths: "{{ ansible_env.HOME }}/.local/share/fonts"
+    patterns: "*{{ nerd_font }}*Nerd*.ttf"
+  register: nerd_font_found
+
+- name: Download and extract the Nerd Font
+  ansible.builtin.unarchive:
+    src: "{{ nerd_font_url }}"
+    dest: "{{ ansible_env.HOME }}/.local/share/fonts"
+    remote_src: true
+    include: ["*.ttf"]
+  when: nerd_font_found.matched | int == 0
+  notify: Update font cache

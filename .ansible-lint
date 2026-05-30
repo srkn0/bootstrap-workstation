@@ -1,3 +1,20 @@
-# to avoid "role-name[path]: Avoid using paths when importing roles. (../..)"
+---
+# Strict "production" ruleset - enforces correctness, idempotency and style.
+profile: production
+
 exclude_paths:
+  - .github/
+  - molecule/
   - tests/
+  - roles/geerlingguy.docker/
+
+# Deliberate trade-offs for a personal, run-on-localhost bootstrap (not a
+# role published to Ansible Galaxy):
+skip_list:
+  - role-name                  # "workstation" is personal, not a Galaxy publish
+  - meta-no-info               # publish-only meta fields are irrelevant here
+  - latest                     # omz/plugins intentionally track upstream HEAD
+  - var-naming[no-role-prefix] # toggles like with_docker read better unprefixed
+
+kinds:
+  - playbook: site.yml

@@ -1,0 +1,62 @@
+---
+# Orchestrator. Each block is independently tag-selectable, e.g.:
+#   ansible-playbook site.yml --tags mise,neovim
+#   ansible-playbook site.yml --skip-tags docker
+
+- name: Detect environment (WSL vs native Linux)
+  ansible.builtin.import_tasks: facts.yml
+  tags: [always]
+
+- name: Base apt packages
+  ansible.builtin.import_tasks: packages.yml
+  when: with_packages | bool
+  tags: [packages]
+
+- name: Zsh + Oh My Zsh
+  ansible.builtin.import_tasks: shell.yml
+  when: with_shell | bool
+  tags: [shell]
+
+- name: Homebrew (linuxbrew)
+  ansible.builtin.import_tasks: brew.yml
+  when: with_brew | bool
+  tags: [brew]
+
+- name: mise + dev tooling and runtimes
+  ansible.builtin.import_tasks: mise.yml
+  when: with_mise | bool
+  tags: [mise]
+
+- name: Nerd Font (native Linux)
+  ansible.builtin.import_tasks: fonts.yml
+  when:
+    - with_fonts | bool
+    - not is_wsl | bool
+  tags: [fonts]
+
+- name: WSL -> Windows integration (Nerd Font + Windows Terminal)
+  ansible.builtin.import_tasks: windows.yml
+  when:
+    - with_fonts | bool
+    - is_wsl | bool
+  tags: [fonts, windows]
+
+- name: Neovim (LazyVim) config
+  ansible.builtin.import_tasks: neovim.yml
+  when: with_neovim | bool
+  tags: [neovim]
+
+- name: Starship prompt config
+  ansible.builtin.import_tasks: starship.yml
+  when: with_starship | bool
+  tags: [starship]
+
+- name: Dotfiles (zshrc, tmux, atuin)
+  ansible.builtin.import_tasks: dotfiles.yml
+  when: with_dotfiles | bool
+  tags: [dotfiles]
+
+- name: Docker engine
+  ansible.builtin.import_tasks: docker.yml
+  when: with_docker | bool
+  tags: [docker]

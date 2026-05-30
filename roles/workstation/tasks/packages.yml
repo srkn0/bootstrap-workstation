@@ -1,0 +1,31 @@
+---
+- name: Install base apt packages
+  become: true
+  ansible.builtin.apt:
+    name:
+      - zsh
+      - git
+      - curl
+      - wget
+      - unzip
+      - tar
+      - gzip
+      - gpg
+      - ca-certificates
+      - build-essential
+      - procps
+      - file
+      - tmux
+      - fontconfig
+      - fonts-powerline
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Install wslu (WSL helpers - wslview/wslvar)
+  become: true
+  ansible.builtin.apt:
+    name: wslu
+    state: present
+  when: is_wsl | bool
+  failed_when: false  # wslu lives in 'universe'; non-fatal if unavailable
