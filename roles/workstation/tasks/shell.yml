@@ -17,7 +17,7 @@
     label: "{{ item.name }}"
 
 - name: Determine zsh path
-  ansible.builtin.command: command -v zsh
+  ansible.builtin.command: which zsh
   register: zsh_path
   changed_when: false
 

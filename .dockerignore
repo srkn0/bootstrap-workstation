@@ -1,0 +1,9 @@
+.git
+.github
+.molecule
+.ansible
+roles/geerlingguy.docker
+*.tar.gz
+*.bundle
+tests
+molecule

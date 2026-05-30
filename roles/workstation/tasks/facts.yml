@@ -1,7 +1,7 @@
 ---
-- name: Detect WSL
+- name: Detect WSL (auto, unless is_wsl was set explicitly e.g. -e is_wsl=false)
   ansible.builtin.set_fact:
-    is_wsl: "{{ 'microsoft' in (ansible_kernel | lower) }}"
+    is_wsl: "{{ is_wsl | default('microsoft' in (ansible_kernel | lower)) }}"
 
 - name: Report detected environment
   ansible.builtin.debug:

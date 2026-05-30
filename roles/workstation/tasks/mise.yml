@@ -45,4 +45,6 @@
 - name: Install tools and runtimes declared in mise config
   ansible.builtin.command: mise install --yes
   register: mise_install
-  changed_when: "'installing' in (mise_install.stdout ~ mise_install.stderr) | lower"
+  # mise prints install progress to stdout only when it actually installs
+  # something; warnings (e.g. self-update notices) go to stderr.
+  changed_when: "'installing' in (mise_install.stdout | lower)"

@@ -22,7 +22,7 @@
   when: with_brew | bool
   tags: [brew]
 
-- name: mise + dev tooling and runtimes
+- name: Mise + dev tooling and runtimes
   ansible.builtin.import_tasks: mise.yml
   when: with_mise | bool
   tags: [mise]
