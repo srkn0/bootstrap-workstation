@@ -11,6 +11,7 @@
       - tar
       - gzip
       - gpg
+      - gnupg          # provides gpg-agent, needed by mise's signature checks
       - ca-certificates
       - build-essential
       - procps
