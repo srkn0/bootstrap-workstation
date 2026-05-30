@@ -1,0 +1,52 @@
+---
+name: CI
+
+"on":
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    name: Lint (yamllint + ansible-lint + shellcheck)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install linters
+        run: pip install ansible-core ansible-lint yamllint
+
+      - name: yamllint
+        run: yamllint .
+
+      - name: Install Galaxy role dependencies
+        run: ansible-galaxy install -r requirements.yml
+
+      - name: ansible-lint
+        run: ansible-lint
+
+      - name: shellcheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+          shellcheck bootstrap.sh
+
+  molecule:
+    name: Molecule (Docker)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Molecule
+        run: pip install "molecule-plugins[docker]" molecule ansible-core docker
+
+      - name: Run Molecule
+        run: molecule test

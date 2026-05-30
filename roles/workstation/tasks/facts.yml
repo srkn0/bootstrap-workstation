@@ -1,0 +1,50 @@
+---
+- name: Detect WSL (auto, unless is_wsl was set explicitly e.g. -e is_wsl=false)
+  ansible.builtin.set_fact:
+    is_wsl: "{{ is_wsl | default('microsoft' in (ansible_facts.kernel | lower)) }}"
+
+- name: Report detected environment
+  ansible.builtin.debug:
+    msg: "Detected {{ 'WSL2' if is_wsl else 'native Linux' }} (kernel {{ ansible_facts.kernel }})"
+
+- name: Find the Windows user profile (WSL)  # noqa: command-instead-of-module
+  ansible.builtin.shell: |
+    set -o pipefail
+    for d in /mnt/c/Users/*/; do
+      u="$(basename "$d")"
+      case "$u" in Public|Default|"Default User"|"All Users"|defaultuser0) continue;; esac
+      [ -d "${d}AppData/Local" ] && { echo "$u"; break; }
+    done
+  args:
+    executable: /bin/bash
+  register: win_user_find
+  changed_when: false
+  failed_when: false
+  when: is_wsl | bool
+
+- name: Set Windows path facts (WSL)
+  ansible.builtin.set_fact:
+    win_user: "{{ win_user_find.stdout | trim }}"
+    win_localappdata: "/mnt/c/Users/{{ win_user_find.stdout | trim }}/AppData/Local"
+  when:
+    - is_wsl | bool
+    - win_user_find.stdout | default('') | trim | length > 0
+
+- name: Locate Windows Terminal settings.json (WSL)  # noqa: command-instead-of-module
+  ansible.builtin.shell: |
+    set -o pipefail
+    ls /mnt/c/Users/*/AppData/Local/Packages/Microsoft.WindowsTerminal*/LocalState/settings.json \
+       "/mnt/c/Users/"*"/AppData/Local/Microsoft/Windows Terminal/settings.json" 2>/dev/null | head -n1
+  args:
+    executable: /bin/bash
+  register: wt_find
+  changed_when: false
+  failed_when: false
+  when: is_wsl | bool
+
+- name: Set Windows Terminal settings path fact (WSL)
+  ansible.builtin.set_fact:
+    wt_settings_path: "{{ wt_find.stdout | trim }}"
+  when:
+    - is_wsl | bool
+    - wt_find.stdout | default('') | trim | length > 0

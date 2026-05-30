@@ -1,0 +1,25 @@
+---
+- name: Render .zshrc
+  ansible.builtin.template:
+    src: zshrc.j2
+    dest: "{{ ansible_facts.env.HOME }}/.zshrc"
+    mode: "0644"
+    backup: true
+
+- name: Deploy tmux config
+  ansible.builtin.copy:
+    src: tmux/tmux.conf
+    dest: "{{ ansible_facts.env.HOME }}/.tmux.conf"
+    mode: "0644"
+
+- name: Ensure atuin config directory exists
+  ansible.builtin.file:
+    path: "{{ ansible_facts.env.HOME }}/.config/atuin"
+    state: directory
+    mode: "0755"
+
+- name: Deploy atuin config
+  ansible.builtin.copy:
+    src: atuin/config.toml
+    dest: "{{ ansible_facts.env.HOME }}/.config/atuin/config.toml"
+    mode: "0644"

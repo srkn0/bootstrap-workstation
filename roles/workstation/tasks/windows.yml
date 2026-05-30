@@ -1,0 +1,96 @@
+---
+# Runs only on WSL. Installs the Nerd Font onto the *Windows* host (per-user,
+# no admin) and patches the live Windows Terminal settings.json to use it.
+# File-permission rules are skipped on the Windows mount (/mnt/c) where Unix
+# modes are meaningless.
+
+- name: WSL | Set Windows font paths
+  ansible.builtin.set_fact:
+    win_fonts_dir: "{{ win_localappdata }}/Microsoft/Windows/Fonts"
+    nerd_font_tmp: "/tmp/nerd-font-{{ nerd_font }}"
+  when: win_localappdata is defined
+
+- name: WSL | Skip with a notice if the Windows user could not be resolved
+  ansible.builtin.debug:
+    msg: "Could not resolve a Windows user under /mnt/c/Users - skipping Windows font + terminal steps."
+  when: win_localappdata is not defined
+
+- name: WSL | Install font onto Windows
+  when: win_localappdata is defined
+  block:
+    - name: WSL | Create temp dir for font download
+      ansible.builtin.file:
+        path: "{{ nerd_font_tmp }}"
+        state: directory
+        mode: "0755"
+
+    - name: WSL | Download Nerd Font archive
+      ansible.builtin.get_url:
+        url: "{{ nerd_font_url }}"
+        dest: "{{ nerd_font_tmp }}/{{ nerd_font }}.zip"
+        mode: "0644"
+
+    - name: WSL | Extract Nerd Font ttf files
+      ansible.builtin.unarchive:
+        src: "{{ nerd_font_tmp }}/{{ nerd_font }}.zip"
+        dest: "{{ nerd_font_tmp }}"
+        remote_src: true
+        include: ["*.ttf"]
+
+    - name: WSL | Collect extracted ttf files
+      ansible.builtin.find:
+        paths: "{{ nerd_font_tmp }}"
+        patterns: "*.ttf"
+      register: nerd_font_ttfs
+
+    - name: WSL | Ensure the Windows per-user Fonts directory exists  # noqa: risky-file-permissions
+      ansible.builtin.file:
+        path: "{{ win_fonts_dir }}"
+        state: directory
+
+    - name: WSL | Copy ttf files into the Windows Fonts directory  # noqa: risky-file-permissions
+      ansible.builtin.copy:
+        src: "{{ item.path }}"
+        dest: "{{ win_fonts_dir }}/{{ item.path | basename }}"
+        remote_src: true
+      loop: "{{ nerd_font_ttfs.files }}"
+      loop_control:
+        label: "{{ item.path | basename }}"
+
+    - name: WSL | Register the fonts for the current Windows user (HKCU)
+      ansible.builtin.command: >-
+        reg.exe add
+        "HKCU\Software\Microsoft\Windows NT\CurrentVersion\Fonts"
+        /v "{{ item.path | basename | splitext | first }} (TrueType)"
+        /t REG_SZ
+        /d "{{ item.path | basename }}"
+        /f
+      loop: "{{ nerd_font_ttfs.files }}"
+      loop_control:
+        label: "{{ item.path | basename }}"
+      changed_when: false
+      failed_when: false
+
+- name: WSL | Patch Windows Terminal font face
+  when:
+    - wt_set_font | bool
+    - wt_settings_path is defined
+  block:
+    - name: WSL | Read current Windows Terminal settings
+      ansible.builtin.slurp:
+        src: "{{ wt_settings_path }}"
+      register: wt_raw
+
+    - name: WSL | Compute merged Windows Terminal settings (font face only)
+      ansible.builtin.set_fact:
+        wt_current: "{{ wt_raw.content | b64decode | from_json }}"
+        wt_merged: >-
+          {{ (wt_raw.content | b64decode | from_json)
+             | combine({'profiles': {'defaults': {'font': {'face': nerd_font_face}}}}, recursive=true) }}
+
+    - name: WSL | Write patched Windows Terminal settings (timestamped backup)  # noqa: risky-file-permissions
+      ansible.builtin.copy:
+        content: "{{ wt_merged | to_nice_json(indent=4) }}\n"
+        dest: "{{ wt_settings_path }}"
+        backup: true
+      when: wt_current != wt_merged

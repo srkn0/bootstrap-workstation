@@ -1,0 +1,29 @@
+---
+galaxy_info:
+  role_name: workstation
+  namespace: srkn0
+  author: srkn0
+  description: >-
+    Bootstrap a Linux/WSL2 developer workstation - zsh + Oh My Zsh, Starship,
+    all CLI tooling and language runtimes via mise, Neovim (LazyVim), Homebrew,
+    Docker, and (on WSL) Nerd Font + Windows Terminal integration.
+  license: MIT
+  min_ansible_version: "2.14"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - jammy
+        - noble
+    - name: Debian
+      versions:
+        - bookworm
+  galaxy_tags:
+    - workstation
+    - dotfiles
+    - developer
+    - mise
+    - neovim
+    - zsh
+    - wsl
+
+dependencies: []

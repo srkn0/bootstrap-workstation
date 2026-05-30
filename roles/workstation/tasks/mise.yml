@@ -1,0 +1,41 @@
+---
+- name: Add the mise apt repository (fetches the signing key too)
+  become: true
+  ansible.builtin.deb822_repository:
+    name: mise
+    types: [deb]
+    uris: https://mise.jdx.dev/deb
+    suites: [stable]
+    components: [main]
+    architectures: "{{ 'arm64' if ansible_facts.architecture == 'aarch64' else 'amd64' }}"
+    signed_by: https://mise.jdx.dev/gpg-key.pub
+    state: present
+
+- name: Install mise
+  become: true
+  ansible.builtin.apt:
+    name: mise
+    state: present
+    update_cache: true
+
+- name: Ensure mise config directory exists
+  ansible.builtin.file:
+    path: "{{ ansible_facts.env.HOME }}/.config/mise"
+    state: directory
+    mode: "0755"
+
+- name: Deploy mise global config
+  ansible.builtin.copy:
+    src: mise/config.toml
+    dest: "{{ mise_config_target }}"
+    mode: "0644"
+
+- name: Detect tools not yet installed
+  ansible.builtin.command: mise ls --missing --offline
+  register: mise_missing
+  changed_when: false
+
+- name: Install tools and runtimes declared in mise config
+  ansible.builtin.command: mise install --yes
+  changed_when: true
+  when: mise_missing.stdout | trim | length > 0

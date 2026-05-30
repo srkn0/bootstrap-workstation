@@ -1,0 +1,40 @@
+{
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: [
+    'config:recommended',
+    ':dependencyDashboard',
+    ':semanticCommits',
+  ],
+  timezone: 'Europe/Berlin',
+  labels: ['dependencies'],
+  schedule: ['before 6am on monday'],
+  lockFileMaintenance: { enabled: true },
+  // Keep the pinned tool versions in roles/workstation/files/mise/config.toml current.
+  mise: { enabled: true },
+  'pre-commit': { enabled: true },
+  packageRules: [
+    {
+      description: 'Group all mise tool bumps into one PR',
+      matchManagers: ['mise'],
+      groupName: 'mise tools',
+    },
+    {
+      description: 'Group GitHub Actions bumps',
+      matchManagers: ['github-actions'],
+      groupName: 'github-actions',
+    },
+    {
+      description: 'Auto-merge patch + minor dev-tool updates',
+      matchManagers: ['mise', 'github-actions', 'pre-commit'],
+      matchUpdateTypes: ['minor', 'patch', 'digest'],
+      automerge: true,
+    },
+    {
+      description: 'Language runtimes: majors are manual review only',
+      matchManagers: ['mise'],
+      matchPackageNames: ['go', 'node', 'python'],
+      matchUpdateTypes: ['major'],
+      automerge: false,
+    },
+  ],
+}

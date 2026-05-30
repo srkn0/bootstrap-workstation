@@ -1,2 +1,17 @@
+# OS / editor
 .DS_Store
 *.kate-swp
+*.swp
+
+# Python
+__pycache__/
+*.pyc
+
+# Ansible
+*.retry
+.ansible/
+roles/geerlingguy.*/
+
+# Molecule / test caches
+.molecule/
+.pytest_cache/
