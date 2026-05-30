@@ -1,6 +1,10 @@
 ---
-# External Galaxy roles. Install with: ansible-galaxy install -r requirements.yml
+# External Galaxy content. Install with: ansible-galaxy install -r requirements.yml
 # (the bootstrap.sh / Makefile do this for you).
 roles:
   - name: geerlingguy.docker
     version: "7.4.5"
+
+collections:
+  - name: ansible.posix
+    version: ">=1.5.4"

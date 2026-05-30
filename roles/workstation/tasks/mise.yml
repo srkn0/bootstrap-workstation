@@ -42,9 +42,12 @@
     dest: "{{ mise_config_target }}"
     mode: "0644"
 
+- name: Detect tools not yet installed
+  ansible.builtin.command: mise ls --missing --offline
+  register: mise_missing
+  changed_when: false
+
 - name: Install tools and runtimes declared in mise config
   ansible.builtin.command: mise install --yes
-  register: mise_install
-  # mise prints install progress to stdout only when it actually installs
-  # something; warnings (e.g. self-update notices) go to stderr.
-  changed_when: "'installing' in (mise_install.stdout | lower)"
+  changed_when: true
+  when: mise_missing.stdout | trim | length > 0

@@ -15,6 +15,7 @@
       - build-essential
       - procps
       - file
+      - rsync
       - tmux
       - fontconfig
       - fonts-powerline
