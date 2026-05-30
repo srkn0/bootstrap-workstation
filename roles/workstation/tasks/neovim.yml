@@ -1,23 +1,20 @@
 ---
 - name: Ensure Neovim config directory exists
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/.config/nvim"
+    path: "{{ ansible_facts.env.HOME }}/.config/nvim"
     state: directory
     mode: "0755"
 
 - name: Deploy Neovim (LazyVim) config
-  ansible.posix.synchronize:
+  ansible.builtin.copy:
     src: nvim/
-    dest: "{{ ansible_env.HOME }}/.config/nvim/"
-    recursive: true
-    delete: false
-  # synchronize runs rsync on the target for a local connection.
-  delegate_to: "{{ inventory_hostname }}"
+    dest: "{{ ansible_facts.env.HOME }}/.config/nvim/"
+    mode: preserve
 
 - name: Sync LazyVim plugins headlessly (optional)
   ansible.builtin.command: mise exec neovim -- nvim --headless "+Lazy! sync" +qa
   args:
-    creates: "{{ ansible_env.HOME }}/.local/share/nvim/lazy/lazy.nvim"
+    creates: "{{ ansible_facts.env.HOME }}/.local/share/nvim/lazy/lazy.nvim"
   changed_when: true
   failed_when: false
   when: nvim_sync | bool

@@ -9,12 +9,12 @@
   ansible.builtin.file:
     path: /home/linuxbrew
     state: directory
-    owner: "{{ ansible_user_id }}"
-    group: "{{ ansible_user_id }}"
+    owner: "{{ ansible_facts.user_id }}"
+    group: "{{ ansible_facts.user_id }}"
     mode: "0755"
   when:
     - not brew_bin.stat.exists
-    - ansible_user_id != 'root'
+    - ansible_facts.user_id != 'root'
 
 - name: Install Homebrew (non-interactive)
   ansible.builtin.shell: |
@@ -28,4 +28,4 @@
     NONINTERACTIVE: "1"
   when:
     - not brew_bin.stat.exists
-    - ansible_user_id != 'root'
+    - ansible_facts.user_id != 'root'

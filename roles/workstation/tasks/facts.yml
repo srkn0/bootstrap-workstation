@@ -1,11 +1,11 @@
 ---
 - name: Detect WSL (auto, unless is_wsl was set explicitly e.g. -e is_wsl=false)
   ansible.builtin.set_fact:
-    is_wsl: "{{ is_wsl | default('microsoft' in (ansible_kernel | lower)) }}"
+    is_wsl: "{{ is_wsl | default('microsoft' in (ansible_facts.kernel | lower)) }}"
 
 - name: Report detected environment
   ansible.builtin.debug:
-    msg: "Detected {{ 'WSL2' if is_wsl else 'native Linux' }} (kernel {{ ansible_kernel }})"
+    msg: "Detected {{ 'WSL2' if is_wsl else 'native Linux' }} (kernel {{ ansible_facts.kernel }})"
 
 - name: Find the Windows user profile (WSL)  # noqa: command-instead-of-module
   ansible.builtin.shell: |

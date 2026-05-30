@@ -11,7 +11,8 @@
       - tar
       - gzip
       - gpg
-      - gnupg          # provides gpg-agent, needed by mise's signature checks
+      - gnupg            # provides gpg-agent, needed by mise's signature checks
+      - python3-debian   # required by the deb822_repository module
       - ca-certificates
       - build-essential
       - procps
