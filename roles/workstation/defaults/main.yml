@@ -6,6 +6,7 @@ with_packages: true     # base apt packages
 with_shell: true        # zsh + Oh My Zsh + plugins
 with_brew: true         # Homebrew (linuxbrew) as an ad-hoc escape hatch
 with_mise: true         # mise + all CLI tools and language runtimes
+with_broot: true        # broot (installed outside mise; see tasks/broot.yml)
 with_fonts: true        # Nerd Font (native: ~/.local/share/fonts; WSL: Windows)
 with_neovim: true       # deploy the LazyVim config
 with_starship: true     # deploy the Starship prompt config
@@ -18,6 +19,12 @@ nvim_sync: false
 
 # Patch the existing Windows Terminal settings.json to use the Nerd Font (WSL only).
 wt_set_font: true
+
+# ---------------------------------------------------------------------------
+# broot (not available via mise - see tasks/broot.yml). Kept current by Renovate.
+# ---------------------------------------------------------------------------
+broot_version: "1.56.4"
+broot_url: "https://github.com/Canop/broot/releases/download/v{{ broot_version }}/broot_{{ broot_version }}.zip"
 
 # ---------------------------------------------------------------------------
 # Nerd Font (var-driven so it's trivially swappable)
@@ -41,4 +48,4 @@ omz_plugins:
     repo: https://github.com/TamCore/autoupdate-oh-my-zsh-plugins
 
 # mise global config destination
-mise_config_target: "{{ ansible_env.HOME }}/.config/mise/config.toml"
+mise_config_target: "{{ ansible_facts.env.HOME }}/.config/mise/config.toml"

@@ -27,6 +27,11 @@
   when: with_mise | bool
   tags: [mise]
 
+- name: Broot (installed outside mise - see tasks/broot.yml)
+  ansible.builtin.import_tasks: broot.yml
+  when: with_broot | bool
+  tags: [broot]
+
 - name: Nerd Font (native Linux)
   ansible.builtin.import_tasks: fonts.yml
   when:

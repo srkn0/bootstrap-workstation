@@ -1,0 +1,53 @@
+---
+# broot ships ONE zip containing a subfolder per platform (e.g.
+# x86_64-unknown-linux-musl/broot). mise's ubi/aqua backends can't pick the
+# right inner binary, so we extract the arch-matched one ourselves.
+
+- name: Set broot facts
+  ansible.builtin.set_fact:
+    broot_bin: "{{ ansible_facts.env.HOME }}/.local/bin/broot"
+    broot_triple: >-
+      {{ 'aarch64-unknown-linux-musl'
+         if ansible_facts.architecture == 'aarch64'
+         else 'x86_64-unknown-linux-musl' }}
+
+- name: Check installed broot version
+  ansible.builtin.command: "{{ broot_bin }} --version"
+  register: broot_installed
+  changed_when: false
+  failed_when: false
+
+- name: Install broot
+  when: broot_version not in (broot_installed.stdout | default(''))
+  block:
+    - name: Ensure ~/.local/bin exists
+      ansible.builtin.file:
+        path: "{{ ansible_facts.env.HOME }}/.local/bin"
+        state: directory
+        mode: "0755"
+
+    - name: Create a temp dir for the broot download
+      ansible.builtin.tempfile:
+        state: directory
+        suffix: broot
+      register: broot_tmp
+
+    - name: Download and extract the arch-matched broot binary
+      ansible.builtin.unarchive:
+        src: "{{ broot_url }}"
+        dest: "{{ broot_tmp.path }}"
+        remote_src: true
+        include:
+          - "{{ broot_triple }}/broot"
+
+    - name: Install the broot binary
+      ansible.builtin.copy:
+        src: "{{ broot_tmp.path }}/{{ broot_triple }}/broot"
+        dest: "{{ broot_bin }}"
+        mode: "0755"
+        remote_src: true
+
+    - name: Remove the temp dir
+      ansible.builtin.file:
+        path: "{{ broot_tmp.path }}"
+        state: absent

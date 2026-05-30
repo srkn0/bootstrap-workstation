@@ -9,9 +9,24 @@
   labels: ['dependencies'],
   schedule: ['before 6am on monday'],
   lockFileMaintenance: { enabled: true },
+  // Always attach upstream release notes / changelogs to PRs when available.
+  fetchChangeLogs: 'pin',
   // Keep the pinned tool versions in roles/workstation/files/mise/config.toml current.
   mise: { enabled: true },
   'pre-commit': { enabled: true },
+  // broot isn't installed via mise (its release zip bundles every platform, so
+  // mise's backends can't disambiguate). It's pinned as broot_version in the
+  // role defaults; track it as a GitHub release so Renovate fetches changelogs.
+  customManagers: [
+    {
+      customType: 'regex',
+      managerFilePatterns: ['/roles/workstation/defaults/main\\.yml$/'],
+      matchStrings: ['broot_version:\\s*["\']?(?<currentValue>[\\d.]+)["\']?'],
+      depNameTemplate: 'Canop/broot',
+      datasourceTemplate: 'github-releases',
+      extractVersionTemplate: '^v?(?<version>.+)$',
+    },
+  ],
   packageRules: [
     {
       description: 'Group all mise tool bumps into one PR',
@@ -25,7 +40,7 @@
     },
     {
       description: 'Auto-merge patch + minor dev-tool updates',
-      matchManagers: ['mise', 'github-actions', 'pre-commit'],
+      matchManagers: ['mise', 'github-actions', 'pre-commit', 'custom.regex'],
       matchUpdateTypes: ['minor', 'patch', 'digest'],
       automerge: true,
     },

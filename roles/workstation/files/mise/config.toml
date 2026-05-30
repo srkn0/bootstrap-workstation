@@ -32,9 +32,12 @@ fzf = "0.73.1"
 # --- shell UX ---
 zoxide = "0.9.9"
 atuin = "18.16.1"
-"ubi:Canop/broot" = "1.56.4"  # not in mise registry; via ubi (GitHub releases)
 starship = "1.25.1"
 direnv = "2.37.1"
+# NOTE: broot is intentionally NOT here. Its release is a single zip containing
+# a per-platform subfolder, which mise's ubi/aqua backends can't disambiguate
+# (they pick the wrong inner binary -> "exec format error"). It's installed by
+# the dedicated tasks/broot.yml instead. See roles/workstation/tasks/broot.yml.
 
 # --- dev workflow ---
 lazygit = "0.62.1"
