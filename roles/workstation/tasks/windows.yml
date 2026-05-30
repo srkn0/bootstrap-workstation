@@ -81,12 +81,13 @@
         src: "{{ wt_settings_path }}"
       register: wt_raw
 
-    - name: WSL | Compute merged Windows Terminal settings (font face only)
+    - name: WSL | Compute merged Windows Terminal settings (font face + size)
       ansible.builtin.set_fact:
         wt_current: "{{ wt_raw.content | b64decode | from_json }}"
         wt_merged: >-
           {{ (wt_raw.content | b64decode | from_json)
-             | combine({'profiles': {'defaults': {'font': {'face': nerd_font_face}}}}, recursive=true) }}
+             | combine({'profiles': {'defaults': {'font':
+               {'face': nerd_font_face, 'size': terminal_font_size}}}}, recursive=true) }}
 
     - name: WSL | Write patched Windows Terminal settings (timestamped backup)  # noqa: risky-file-permissions
       ansible.builtin.copy:

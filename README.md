@@ -51,17 +51,26 @@ molecule/ · tests/Dockerfile · .github/workflows/ci.yml
 - **Modern CLI** — eza, bat, fd, ripgrep, fzf, broot, lazygit, gh, direnv, tmux.
 - **Kubernetes / IaC** — kubectl, kind, helm, kustomize, k9s, kubectx/kubens, terraform.
 - **Containers** — Docker engine (via `geerlingguy.docker`).
-- **Fonts** — Agave Nerd Font (swap via `nerd_font` var).
+- **Terminal & font** — Agave Nerd Font (swap via `nerd_font`) installed and wired into
+  the terminal on both OSes: kitty on native Linux, Windows Terminal on WSL.
 
-## WSL → Windows integration
+## Terminal & font, per OS
 
-On WSL2 the role detects it (`is_wsl`) and, instead of installing the font for Linux:
+The role detects WSL at runtime (`is_wsl`) and wires the Nerd Font into the right place:
+
+**Native Linux** — installs the font into `~/.local/share/fonts`, installs **kitty**, and
+deploys `~/.config/kitty/kitty.conf` set to the Nerd Font. (`with_kitty`, default on.)
+
+**WSL2** — kitty is skipped; instead:
 
 1. Installs the Nerd Font onto the **Windows** host per-user (no admin) — copies the
    `.ttf`s into `%LOCALAPPDATA%\Microsoft\Windows\Fonts` and registers them under `HKCU`.
 2. **Patches** the live Windows Terminal `settings.json` in place — sets only
-   `profiles.defaults.font.face` (timestamped backup, idempotent). Your profiles,
+   `profiles.defaults.font` (face + size; timestamped backup, idempotent). Your profiles,
    keybindings, default profile and theme are left untouched.
+
+The font name (`nerd_font` / `nerd_font_face`) and `terminal_font_size` are shared by both
+paths, so changing the font is a one-line edit that applies everywhere.
 
 ## Usage
 

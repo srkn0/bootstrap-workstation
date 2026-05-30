@@ -8,6 +8,7 @@ with_brew: true         # Homebrew (linuxbrew) as an ad-hoc escape hatch
 with_mise: true         # mise + all CLI tools and language runtimes
 with_broot: true        # broot (installed outside mise; see tasks/broot.yml)
 with_fonts: true        # Nerd Font (native: ~/.local/share/fonts; WSL: Windows)
+with_kitty: true        # kitty terminal + font config (native Linux only)
 with_neovim: true       # deploy the LazyVim config
 with_starship: true     # deploy the Starship prompt config
 with_dotfiles: true     # .zshrc, .tmux.conf, atuin config
@@ -33,6 +34,9 @@ nerd_font: "Agave"
 nerd_font_face: "Agave Nerd Font"
 nerd_font_version: "v3.4.0"
 nerd_font_url: "https://github.com/ryanoasis/nerd-fonts/releases/download/{{ nerd_font_version }}/{{ nerd_font }}.zip"
+
+# Point size used by terminal configs (kitty, Windows Terminal).
+terminal_font_size: 11
 
 # ---------------------------------------------------------------------------
 # Oh My Zsh custom plugins (cloned into ~/.oh-my-zsh/custom/plugins)

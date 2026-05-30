@@ -46,6 +46,13 @@
     - is_wsl | bool
   tags: [fonts, windows]
 
+- name: Kitty terminal + font (native Linux)
+  ansible.builtin.import_tasks: kitty.yml
+  when:
+    - with_kitty | bool
+    - not is_wsl | bool
+  tags: [kitty, fonts]
+
 - name: Neovim (LazyVim) config
   ansible.builtin.import_tasks: neovim.yml
   when: with_neovim | bool
