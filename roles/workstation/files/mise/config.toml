@@ -11,10 +11,10 @@ idiomatic_version_file_enable_tools = ["go", "node", "python"]
 
 [tools]
 # --- language runtimes ---
-go = "1.26.3"
+go = "1.26.4"
 node = "24.16.0"      # current LTS line
 python = "3.14.5"
-pnpm = "11.5.0"
+pnpm = "11.5.2"
 
 # --- Go tooling ---
 "golangci-lint" = "2.12.2"
@@ -40,14 +40,14 @@ direnv = "2.37.1"
 # the dedicated tasks/broot.yml instead. See roles/workstation/tasks/broot.yml.
 
 # --- dev workflow ---
-lazygit = "0.62.1"
+lazygit = "0.62.2"
 gh = "2.93.0"
 
 # --- kubernetes / IaC ---
 kubectl = "1.36.1"
-kind = "0.31.0"
+kind = "0.32.0"
 helm = "4.2.0"
 kustomize = "5.8.1"
-k9s = "0.50.18"
+k9s = "0.51.0"
 kubectx = "0.11.0"
 terraform = "1.15.5"
