@@ -24,7 +24,7 @@ wt_set_font: true
 # ---------------------------------------------------------------------------
 # broot (not available via mise - see tasks/broot.yml). Kept current by Renovate.
 # ---------------------------------------------------------------------------
-broot_version: "1.56.4"
+broot_version: "1.57.0"
 broot_url: "https://github.com/Canop/broot/releases/download/v{{ broot_version }}/broot_{{ broot_version }}.zip"
 
 # ---------------------------------------------------------------------------
